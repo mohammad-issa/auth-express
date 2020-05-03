@@ -1,13 +1,19 @@
 const express = require('express');
 const dotenv = require('dotenv');
 
-// Router Files
-const bootcamps = require('./routes/bootcamps');
+const app = express();
+const logger = require('./middleware/logger');
 
 // Load env variables
 dotenv.config({ path: './config/config.env' });
 
-const app = express();
+// Router files
+const bootcamps = require('./routes/bootcamps');
+
+// Dev logging middleware
+if (process.env.NODE_ENV === 'develpoment') {
+  app.use(logger);
+}
 
 // Mount routers
 app.use('/api/bootcamps', bootcamps);

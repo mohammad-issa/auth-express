@@ -1,6 +1,8 @@
-// @desc    Get all bootcamps
-// @route   GET /api/bootcamps
-// @access  Public
+/**
+ * Get all bootcamps
+ * @route   GET /api/bootcamps
+ * @access  Public
+*/
 exports.getBootcamps = (req, res, next) => {
 	res
 		.status(200)
@@ -10,9 +12,11 @@ exports.getBootcamps = (req, res, next) => {
 		});
 }
 
-// @desc    Get all bootcamps
-// @route   GET /api/bootcamps/:id
-// @access  Public
+/**
+ * Get single bootcamp
+ * @route   GET /api/bootcamps/:id
+ * @access  Public
+*/
 exports.getBootcamp = (req, res, next) => {
 	res
     .status(200)
@@ -22,9 +26,11 @@ exports.getBootcamp = (req, res, next) => {
     });
 }
 
-// @desc    Get all bootcamps
-// @route   POST /api/bootcamps
-// @access  Private
+/**
+ * Create new bootcamp
+ * @route   POST /api/bootcamps
+ * @access  Private
+*/
 exports.createBootcamp = (req, res, next) => {
   res
     .status(200)
@@ -34,9 +40,11 @@ exports.createBootcamp = (req, res, next) => {
     });
 }
 
-// @desc    Get all bootcamps
-// @route   PUT /api/bootcamps/:id
-// @access  Private
+/**
+ * Update bootcamp
+ * @route   PUT /api/bootcamps/:id
+ * @access  Private
+*/
 exports.updateBootcamp = (req, res, next) => {
   res
     .status(200)
@@ -46,9 +54,11 @@ exports.updateBootcamp = (req, res, next) => {
     });
 }
 
-// @desc    Get all bootcamps
-// @route   DELETE /api/bootcamps/:id
-// @access  Private
+/**
+ * Delete bootcamp
+ * @route   DELETE /api/bootcamps/:id
+ * @access  Private
+*/
 exports.deleteBootcamp = (req, res, next) => {
   res
     .status(200)
