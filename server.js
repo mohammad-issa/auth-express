@@ -17,7 +17,7 @@ app.use(express.json());
 const logger = require('./middleware/logger');
 
 // Router files
-const bootcamps = require('./routes/bootcamps');
+const packages = require('./routes/packages');
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'develpoment') {
@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === 'develpoment') {
 }
 
 // Mount routers
-app.use('/api/bootcamps', bootcamps);
+app.use('/api/packages', packages);
 
 // Errors middelwaer
 app.use(errorHandler);

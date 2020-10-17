@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const BootcampSchema = new mongoose.Schema({
+const PackagesSchema = new mongoose.Schema({
     name: {
         type: String,
         maxlength: [50, 'Name can not be more that 50 characters'],
@@ -20,6 +20,9 @@ const BootcampSchema = new mongoose.Schema({
     address: {
         type: String,
     },
+    location: {
+        type: String,
+    },
     rating: {
         type: Number,
         min: [1, 'Rating must be at least 1'],
@@ -35,4 +38,4 @@ const BootcampSchema = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Bootcamp', BootcampSchema);
+module.exports = mongoose.model('Packages', PackagesSchema);
