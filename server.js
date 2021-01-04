@@ -1,7 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const bodyParser = require('body-parser');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errors');
+const cookieParser = require('cookie-parser')
 
 const app = express();
 
@@ -12,12 +14,15 @@ dotenv.config({ path: './config/config.env' });
 connectDB();
 
 // Body parser
-app.use(express.json());
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
-const logger = require('./middleware/logger');
+// Cookie-parser
+app.use(cookieParser());
 
 // Router files
 const packages = require('./routes/packages');
+const auth = require('./routes/auth');
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'develpoment') {
@@ -26,6 +31,7 @@ if (process.env.NODE_ENV === 'develpoment') {
 
 // Mount routers
 app.use('/api/packages', packages);
+app.use('/api/auth', auth);
 
 // Errors middelwaer
 app.use(errorHandler);
