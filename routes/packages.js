@@ -12,13 +12,13 @@ const router = express.Router();
 
 router
 	.route('/')
-	.get(getPackages)
-	.post(createPackage)
+		.get(getPackages)
+		.post(createPackage)
 
 router
 	.route('/:id')
-	.get(getPackage)
-	.put(updatePackage)
-	.delete(deletePackage)
+		.get(getPackage)
+		.put(updatePackage)
+		.delete(deletePackage)
 
 module.exports = router

@@ -18,7 +18,7 @@ const errorHandler = (err, req, res, next) => {
 
   // Validation errors
   if (error.name === 'ValidationError') {
-    error = new ErrorResponse('validator error', 400);
+    error = new ErrorResponse(error.message, 400);
   }
   
 
