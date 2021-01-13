@@ -1,4 +1,5 @@
 const PackagesSchema = require('../models/PackagesSchema');
+const UserSchema = require('../models/UserSchema');
 const ErrorResponse = require('../utils/errorResponse');
 
 // const stringServices = require('../services/stringServices');
@@ -61,6 +62,12 @@ exports.createPackage = async (req, res, next) => {
     if (!!checkForName) {
       return next(new ErrorResponse('Name already exists', 400));
     }
+
+    const user = await UserSchema.findById(req.user.id);
+    req.body = {
+      ...req.body,
+      user,
+    };
 
     const package = await PackagesSchema.create(req.body);
     res.status(200).json({
