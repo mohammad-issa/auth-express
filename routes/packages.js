@@ -1,14 +1,14 @@
 const express = require('express');
 
-const { protect } = require('../middleware/auth');
-
 const {
 	getPackages,
 	getPackage,
 	createPackage,
 	updatePackage,
 	deletePackage,
-} = require('../controllers/packages')
+} = require('../controllers/packages');
+
+const { protect } = require('../middleware/auth');
 
 const router = express.Router();
 

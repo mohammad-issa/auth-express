@@ -65,6 +65,26 @@ async function getMe (req, res, next) {
 }
 
 /**
+ * Get user by ID
+ * @route   GET /api/auth/user/:id
+ * @access  Private
+*/
+async function getUserById (req, res, next) {
+    const id = req.params.id;
+
+    try {
+        const user = await UserSchema.findById(id);
+        res.status(200).json({
+            success: true,
+            user,
+        });
+    } catch (error) {
+        return next(new ErrorResponse('no user found', 400));
+    }
+}
+
+
+/**
  * Get token from the model, create cookie ans send response
  */
 function sendTokenResponse(user, res) {
@@ -89,4 +109,5 @@ module.exports = {
     register,
     login,
     getMe,
+    getUserById,
 };
