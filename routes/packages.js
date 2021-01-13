@@ -1,5 +1,7 @@
 const express = require('express');
 
+const { protect } = require('../middleware/auth');
+
 const {
 	getPackages,
 	getPackage,
@@ -13,12 +15,12 @@ const router = express.Router();
 router
 	.route('/')
 		.get(getPackages)
-		.post(createPackage)
+		.post(protect, createPackage)
 
 router
 	.route('/:id')
 		.get(getPackage)
-		.put(updatePackage)
-		.delete(deletePackage)
+		.put(protect, updatePackage)
+		.delete(protect, deletePackage)
 
 module.exports = router

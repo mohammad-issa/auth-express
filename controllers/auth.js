@@ -1,5 +1,4 @@
 const UserSchema = require('../models/UserSchema');
-const { use } = require('../routes/auth');
 const ErrorResponse = require('../utils/errorResponse');
 
 /**
@@ -53,6 +52,19 @@ async function login (req, res, next) {
 };
 
 /**
+ * Login user
+ * @route   POST /api/auth/me
+ * @access  Private
+*/
+async function getMe (req, res, next) {
+    const user = await UserSchema.findById(req.user.id);
+    res.status(200).json({
+        success: true,
+        user,
+    });
+}
+
+/**
  * Get token from the model, create cookie ans send response
  */
 function sendTokenResponse(user, res) {
@@ -76,4 +88,5 @@ function sendTokenResponse(user, res) {
 module.exports = {
     register,
     login,
+    getMe,
 };
