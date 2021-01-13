@@ -86,14 +86,22 @@ exports.createPackage = async (req, res, next) => {
 */
 exports.updatePackage = async (req, res, next) => {
   try {
-    const package = await PackagesSchema.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const userId = req.user.id;
+    let package = await PackagesSchema.findById(req.params.id);
 
     if (!package) {
       return next(new ErrorResponse(`package not found with ID ${req.params.id}`, 404));
     }
+
+    // Check if the user is own the package
+    if (package.user.toString() !== userId) {
+      return next(new ErrorResponse(`user ${userId} is not authorized to update this package`, 401));
+    }
+
+    package = await PackagesSchema.findOneAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     res.status(200).json({
       sucsess: true,
@@ -111,11 +119,19 @@ exports.updatePackage = async (req, res, next) => {
 */
 exports.deletePackage = async (req, res, next) => {
   try {
-    const package = await PackagesSchema.findByIdAndDelete(req.params.id)
+    const userId = req.user.id;
+    const package = await PackagesSchema.findById(req.params.id)
 
     if (!package) {
       return next(new ErrorResponse(`package not found with ID ${req.params.id}`, 404));
     }
+
+    // Check if the user is own the package
+    if (package.user.toString() !== userId) {
+      return next(new ErrorResponse(`user ${userId} is not authorized to delete this package`, 401));
+    }
+
+    package.remove();
 
     res.status(200).json({sucsess: true});
   } catch (err) {
