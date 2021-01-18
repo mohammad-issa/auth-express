@@ -5,6 +5,10 @@ const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errors');
 const cookieParser = require('cookie-parser')
 
+// Router files
+const packages = require('./routes/packages');
+const auth = require('./routes/auth');
+
 const app = express();
 
 // Load env variables
@@ -20,9 +24,6 @@ app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 // Cookie-parser
 app.use(cookieParser());
 
-// Router files
-const packages = require('./routes/packages');
-const auth = require('./routes/auth');
 
 // Dev logging middleware
 if (process.env.NODE_ENV === 'develpoment') {
