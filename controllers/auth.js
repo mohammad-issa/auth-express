@@ -1,5 +1,27 @@
 const UserSchema = require('../models/UserSchema');
 const ErrorResponse = require('../utils/errorResponse');
+const crypto = require('crypto');
+
+/**
+ * Get token from the model, create cookie and send response
+ */
+function sendTokenResponse(user, res) {
+    const token = user.getSignedJwtToken();
+
+    const options = {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
+        httpOnly: true,
+    };
+
+    if (process.env.NODE_ENV === 'production') {
+        options.secure = true;
+    }
+
+    res.status(200).cookie('token', token, options).json({
+        success: true,
+        token,
+    });
+}
 
 /**
  * Create a new user
@@ -52,8 +74,73 @@ async function login (req, res, next) {
 };
 
 /**
- * Login user
- * @route   POST /api/auth/me
+ * Forget password
+ * @route   POST /api/auth/forgetpassword
+ * @access  Public
+*/
+async function forgetPassword (req, res, next) {
+    try {
+        const user = await UserSchema.findOne({ email: req.body.email });
+
+        if (!user) {
+            return next(new ErrorResponse('there is no user with that email', 404));
+        }
+
+        // generate and hash password token
+        const resetToken = user.getResetPasswordToken();
+
+        const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/reset/${resetToken}`;
+        console.log('resetUrl: ', resetUrl);
+
+        userHashed = await UserSchema.findOneAndUpdate({ _id : user._id }, {
+            resetPasswordToken: user.resetPasswordToken,
+            resetPasswordExpire: user.resetPasswordExpire
+        });
+
+        res.status(200).json({
+            success: true,
+            message: 'url sent',
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+/**
+ * Reset password
+ * @route   PUT /api/auth/reset
+ * @access  Public
+*/
+async function resetPassword (req, res, next) {
+    try {
+        const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+        const user = await UserSchema.findOne({
+            resetPasswordToken,
+            resetPasswordExpire: { $gt: Date.now() }
+        });
+
+        if (!user) {
+            return next(new ErrorResponse('invalid', 400));
+        }
+
+        user.password = req.body.password;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+/**
+ * Get logged in user
+ * @route   GET /api/auth/me
  * @access  Private
 */
 async function getMe (req, res, next) {
@@ -83,31 +170,11 @@ async function getUserById (req, res, next) {
     }
 }
 
-
-/**
- * Get token from the model, create cookie ans send response
- */
-function sendTokenResponse(user, res) {
-    const token = user.getSignedJwtToken();
-
-    const options = {
-        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
-        httpOnly: true,
-    };
-
-    if (process.env.NODE_ENV === 'production') {
-        options.secure = true;
-    }
-
-    res.status(200).cookie('token', token, options).json({
-        success: true,
-        token,
-    });
-}
-
 module.exports = {
     register,
     login,
+    forgetPassword,
+    resetPassword,
     getMe,
     getUserById,
 };
